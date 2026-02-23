@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Treasure Hunt</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body{background:radial-gradient(#1a0033,#000);color:white;}.neon{text-shadow:0 0 20px #c026d3,0 0 40px #22d3ee;}</style>
+</head>
+<body class="min-h-screen p-4">
+<div class="max-w-md mx-auto">
+    <h1 class="text-3xl font-bold text-center neon mb-8">🌌 Cosmic Treasure Hunt</h1>
+    
+    <div class="bg-black/50 rounded-3xl p-6 mb-6">
+        <div class="flex justify-between text-xl">
+            <span>⭐ Stars:</span>
+            <span id="stars" class="font-mono">500</span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+        <button onclick="openFree()" class="bg-purple-600 py-6 rounded-3xl text-xl">Бесплатный сундук</button>
+        <button onclick="buyCase(99)" class="bg-amber-600 py-6 rounded-3xl text-xl">Эпический (99★)</button>
+    </div>
+
+    <div class="mt-8">
+        <p class="text-center text-cyan-300 mb-3">Пополнить Stars (списание с твоего баланса Telegram)</p>
+        <div class="grid grid-cols-3 gap-3">
+            <button onclick="buyStars(100)" class="bg-green-600 py-4 rounded-2xl text-sm">100★</button>
+            <button onclick="buyStars(500)" class="bg-green-600 py-4 rounded-2xl text-sm">500★</button>
+            <button onclick="buyStars(2000)" class="bg-green-600 py-4 rounded-2xl text-sm">2000★</button>
+        </div>
+    </div>
+</div>
+
+<script>
+Telegram.WebApp.ready(); Telegram.WebApp.expand();
+
+function sendAction(action, payload = {}) {
+    Telegram.WebApp.sendData(JSON.stringify({action, ...payload}));
+}
+
+function buyStars(amount) { sendAction("buy_stars", {amount}); }
+function openFree() { sendAction("open_case", {cost: 0}); }
+function buyCase(cost) { sendAction("open_case", {cost}); }
+</script>
+</body>
+</html>
