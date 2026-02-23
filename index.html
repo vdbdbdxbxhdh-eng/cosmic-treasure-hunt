@@ -6,44 +6,174 @@
     <title>Cosmic Treasure Hunt</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>body{background:radial-gradient(#1a0033,#000);color:white;}.neon{text-shadow:0 0 20px #c026d3,0 0 40px #22d3ee;}</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', system-ui; background: #0a0a0f; color: white; }
+        .neon { text-shadow: 0 0 15px #22d3ee, 0 0 30px #c026d3; }
+        .case-card { transition: all 0.3s; }
+        .case-card:active { transform: scale(0.95); }
+        .bottom-nav { background: rgba(10,10,15,0.95); backdrop-filter: blur(20px); }
+    </style>
 </head>
-<body class="min-h-screen p-4">
-<div class="max-w-md mx-auto">
-    <h1 class="text-3xl font-bold text-center neon mb-8">🌌 Cosmic Treasure Hunt</h1>
-    
-    <div class="bg-black/50 rounded-3xl p-6 mb-6">
-        <div class="flex justify-between text-xl">
-            <span>⭐ Stars:</span>
-            <span id="stars" class="font-mono">500</span>
+<body class="min-h-screen pb-20">
+
+    <!-- HEADER -->
+    <div class="sticky top-0 bg-[#0a0a0f] border-b border-purple-500 z-50">
+        <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-2xl flex items-center justify-center text-3xl">🌌</div>
+                <div>
+                    <h1 class="text-2xl font-bold neon">Cosmic Treasure Hunt</h1>
+                    <p class="text-xs text-cyan-400 -mt-1">Охота за артефактами</p>
+                </div>
+            </div>
+            <div onclick="showTopUp()" class="flex items-center gap-2 bg-zinc-900 px-4 py-2 rounded-3xl cursor-pointer">
+                <span class="text-yellow-400 text-2xl">⭐</span>
+                <span id="balance" class="font-mono text-xl font-semibold">1248</span>
+                <span class="text-cyan-400 text-xl">+</span>
+            </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-        <button onclick="openFree()" class="bg-purple-600 py-6 rounded-3xl text-xl">Бесплатный сундук</button>
-        <button onclick="buyCase(99)" class="bg-amber-600 py-6 rounded-3xl text-xl">Эпический (99★)</button>
-    </div>
+    <!-- MAIN CONTENT -->
+    <div class="p-4 space-y-6">
 
-    <div class="mt-8">
-        <p class="text-center text-cyan-300 mb-3">Пополнить Stars (списание с твоего баланса Telegram)</p>
-        <div class="grid grid-cols-3 gap-3">
-            <button onclick="buyStars(100)" class="bg-green-600 py-4 rounded-2xl text-sm">100★</button>
-            <button onclick="buyStars(500)" class="bg-green-600 py-4 rounded-2xl text-sm">500★</button>
-            <button onclick="buyStars(2000)" class="bg-green-600 py-4 rounded-2xl text-sm">2000★</button>
+        <!-- Большая акция / Конкурс -->
+        <div class="bg-gradient-to-r from-purple-900 to-blue-900 rounded-3xl p-5 flex gap-4 items-center">
+            <div class="text-7xl">🛸</div>
+            <div class="flex-1">
+                <div class="text-lg font-bold">Галактический Рейд</div>
+                <div class="text-cyan-300 text-sm">Призовой фонд: 5000 Stars</div>
+                <div class="text-xs text-gray-400 mt-1">Осталось 14ч 32мин</div>
+            </div>
+        </div>
+
+        <!-- Бесплатные кейсы -->
+        <div>
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-lg font-semibold">Бесплатные Сундуки</h2>
+                <span class="text-cyan-400 text-sm">2 доступно</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div onclick="openCase(0)" class="case-card bg-gradient-to-br from-purple-900 to-black border border-purple-500 rounded-3xl p-4 text-center">
+                    <div class="text-6xl mb-2">🪐</div>
+                    <div class="font-bold">Бесплатный</div>
+                    <div class="text-xs text-green-400">Сейчас</div>
+                </div>
+                <div onclick="openCase(99)" class="case-card bg-gradient-to-br from-amber-900 to-black border border-amber-500 rounded-3xl p-4 text-center">
+                    <div class="text-6xl mb-2">🌌</div>
+                    <div class="font-bold">Эпический</div>
+                    <div class="text-yellow-400 text-sm">99 ★</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Все кейсы -->
+        <div>
+            <h2 class="text-lg font-semibold mb-3">Космические Сундуки</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div onclick="openCase(299)" class="case-card bg-zinc-900 rounded-3xl overflow-hidden">
+                    <div class="h-40 bg-gradient-to-br from-rose-900 to-purple-900 flex items-center justify-center text-8xl">🌠</div>
+                    <div class="p-4">
+                        <div class="font-bold">Легендарный Сундук</div>
+                        <div class="text-yellow-400">299 ★</div>
+                    </div>
+                </div>
+                <div onclick="openCase(999)" class="case-card bg-zinc-900 rounded-3xl overflow-hidden">
+                    <div class="h-40 bg-gradient-to-br from-cyan-900 to-purple-900 flex items-center justify-center text-8xl">🛸</div>
+                    <div class="p-4">
+                        <div class="font-bold">Мифический Корабль</div>
+                        <div class="text-yellow-400">999 ★</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-Telegram.WebApp.ready(); Telegram.WebApp.expand();
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav fixed bottom-0 left-0 right-0 border-t border-purple-500 py-2">
+        <div class="flex justify-around text-xs">
+            <div onclick="switchTab(0)" class="nav-item flex flex-col items-center text-cyan-400">
+                <i class="fas fa-box text-2xl"></i>
+                <span>Сундуки</span>
+            </div>
+            <div onclick="switchTab(1)" class="nav-item flex flex-col items-center">
+                <i class="fas fa-spinner text-2xl"></i>
+                <span>Рулетка</span>
+            </div>
+            <div onclick="switchTab(2)" class="nav-item flex flex-col items-center">
+                <i class="fas fa-egg text-2xl"></i>
+                <span>Яйца</span>
+            </div>
+            <div onclick="switchTab(3)" class="nav-item flex flex-col items-center">
+                <i class="fas fa-star text-2xl"></i>
+                <span>Миссии</span>
+            </div>
+            <div onclick="switchTab(4)" class="nav-item flex flex-col items-center">
+                <i class="fas fa-trophy text-2xl"></i>
+                <span>Топ</span>
+            </div>
+        </div>
+    </div>
 
-function sendAction(action, payload = {}) {
-    Telegram.WebApp.sendData(JSON.stringify({action, ...payload}));
-}
+    <!-- MODAL ПОПОЛНЕНИЯ (как в Gifts Battle) -->
+    <div id="topupModal" class="hidden fixed inset-0 bg-black/90 flex items-end z-50">
+        <div class="bg-[#111] w-full rounded-t-3xl p-6">
+            <div class="flex justify-between mb-6">
+                <h2 class="text-2xl font-bold">Пополнение Stars</h2>
+                <button onclick="hideTopUp()" class="text-3xl">×</button>
+            </div>
+            <div class="grid grid-cols-3 gap-3 mb-8">
+                <button onclick="buyStars(100)" class="bg-zinc-800 hover:bg-zinc-700 rounded-2xl py-4">100 ★</button>
+                <button onclick="buyStars(500)" class="bg-zinc-800 hover:bg-zinc-700 rounded-2xl py-4">500 ★</button>
+                <button onclick="buyStars(2000)" class="bg-zinc-800 hover:bg-zinc-700 rounded-2xl py-4">2000 ★</button>
+            </div>
+            <button onclick="hideTopUp()" class="w-full bg-gradient-to-r from-green-500 to-emerald-500 py-5 rounded-3xl font-bold text-lg">Пополнить баланс</button>
+        </div>
+    </div>
 
-function buyStars(amount) { sendAction("buy_stars", {amount}); }
-function openFree() { sendAction("open_case", {cost: 0}); }
-function buyCase(cost) { sendAction("open_case", {cost}); }
-</script>
+    <script>
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+
+        let balance = 1248;
+
+        function updateBalance() {
+            document.getElementById('balance').textContent = balance;
+        }
+
+        function sendAction(action, payload = {}) {
+            Telegram.WebApp.sendData(JSON.stringify({action, ...payload}));
+        }
+
+        function buyStars(amount) {
+            sendAction("buy_stars", {amount});
+            hideTopUp();
+        }
+
+        function openCase(cost) {
+            if (cost > 0 && balance < cost) {
+                document.getElementById('topupModal').classList.remove('hidden');
+                return;
+            }
+            sendAction("open_case", {cost});
+        }
+
+        function showTopUp() {
+            document.getElementById('topupModal').classList.remove('hidden');
+        }
+
+        function hideTopUp() {
+            document.getElementById('topupModal').classList.add('hidden');
+        }
+
+        function switchTab(n) {
+            alert("Вкладка " + ["Сундуки","Рулетка","Яйца","Миссии","Топ"][n] + " — скоро будет полная версия!");
+        }
+
+        // Инициализация
+        updateBalance();
+    </script>
 </body>
 </html>
