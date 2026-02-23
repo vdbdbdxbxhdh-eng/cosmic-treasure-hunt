@@ -52,7 +52,7 @@ async def successful_payment(message: Message):
         async with aiosqlite.connect(DB) as db:
             await db.execute("UPDATE users SET stars = stars + ? WHERE id = ?", (amount, message.from_user.id))
             await db.commit()
-        await message.answer(f"✅ +{amount} Stars зачислено на баланс!")
+        await message.answer(f"✅ +{amount} Stars зачислено!")
 
 @dp.message(Command("start"))
 async def start(message: Message):
@@ -65,7 +65,8 @@ async def webapp_data(message: Message):
     user_id = message.from_user.id
     async with aiosqlite.connect(DB) as db:
         await db.execute("INSERT OR IGNORE INTO users (id) VALUES (?)", (user_id,))
-        if data.get("action") == "buy_stars":
+        action = data.get("action")
+        if action == "buy_stars":
             amount = data.get("amount", 100)
             await bot.send_invoice(
                 chat_id=message.chat.id,
@@ -76,7 +77,7 @@ async def webapp_data(message: Message):
                 currency="XTR",
                 prices=[LabeledPrice(label=f"{amount} Stars", amount=amount)]
             )
-        elif data.get("action") == "open_case":
+        elif action == "open_case":
             cost = data.get("cost", 0)
             async with db.execute("SELECT stars FROM users WHERE id = ?", (user_id,)) as cursor:
                 row = await cursor.fetchone()
